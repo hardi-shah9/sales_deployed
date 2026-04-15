@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - DreamGirl CRM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Full Background Image -->
+        <div class="login-bg">
+            <img src="{{ url_for('static', filename='images/login-bg.jpg') }}" alt="DreamGirl Boutique">
+            <div class="login-overlay-1"></div>
+            <div class="login-overlay-2"></div>
+        </div>
+
+        <!-- Left Side — Branding -->
+        <div class="login-branding">
+            <!-- Top Logo -->
+            <div class="logo-section">
+                <div class="logo-box">
+                    <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="DreamGirl">
+                </div>
+                <!-- <div class="logo-text">
+                    <h2>DreamGirl</h2>
+                    <p>Dream destination for fashion</p>
+                </div> -->
+            </div>
+
+            <!-- Center — Tagline -->
+            <div class="tagline-section">
+                <div class="tagline-badge">
+                    <i data-lucide="sparkles"></i>
+                    <span>Sales Management</span>
+                </div>
+                <h1>
+                    Dream Destination<br>
+                    <span class="text-gradient-rose">For Fashion</span>
+                </h1>
+                <p>
+                    Timeless & elegant Indian Ethnic wear CRM
+                </p>
+
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <p class="stat-value">10K+</p>
+                        <p class="stat-label">Customers</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat-value">₹50L+</p>
+                        <p class="stat-label">Revenue</p>
+                    </div>
+                    <div class="stat-item">
+                        <p class="stat-value">98%</p>
+                        <p class="stat-label">Satisfaction</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom -->
+            <p class="copyright">© 2026 Created by Hardi Shah</p>
+        </div>
+
+        <!-- Right Side — Login Card -->
+        <div class="login-card-section">
+            <div class="login-card-wrapper">
+                <!-- Glass Card -->
+                <div class="login-card">
+                    <!-- Mobile Logo -->
+                    <div class="mobile-logo">
+                        <div class="mobile-logo-box">
+                            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="DreamGirl">
+                        </div>
+                    </div>
+
+                    <!-- Header -->
+                    <div class="login-header">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to your DreamGirl CRM</p>
+                    </div>
+
+                    <!-- Error Message -->
+                    {% if error %}
+                    <div class="error-message">
+                        {{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="{{ url_for('login_page') }}" class="login-form" id="loginForm">
+                        <!-- Username -->
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <div class="input-wrapper" id="usernameWrapper">
+                                <i data-lucide="user" class="input-icon"></i>
+                                <input type="text" name="username" id="username" placeholder="Enter your username"
+                                    class="form-input" required autocomplete="username">
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <div class="input-wrapper" id="passwordWrapper">
+                                <i data-lucide="lock" class="input-icon"></i>
+                                <input type="password" name="password" id="password" placeholder="Enter your password"
+                                    class="form-input" required autocomplete="current-password">
+                                <button type="button" class="password-toggle" id="togglePassword">
+                                    <i data-lucide="eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="form-options">
+                            <label class="remember-me">
+                                <div class="checkbox-wrapper">
+                                    <input type="checkbox" name="remember" class="checkbox-input" id="rememberMe">
+                                    <div class="checkbox-box"></div>
+                                    <svg class="checkbox-check" viewBox="0 0 12 12" fill="none">
+                                        <path d="M2 6L5 9L10 3" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <span class="remember-label">Remember me</span>
+                            </label>
+                            <button type="button" class="forgot-password">Forgot password?</button>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="submit-btn" id="submitBtn">
+                            <span id="btnText">Sign In</span>
+                            <div class="btn-shimmer"></div>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Bottom Text -->
+                <p class="mobile-copyright">© 2026 Hardi Shah</p>
+            </div>
+        </div>
+
+        <!-- Floating decorative elements -->
+        <div class="floating-dot floating-dot-1"></div>
+        <div class="floating-dot floating-dot-2"></div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Send heartbeats to keep the server alive!
+        setInterval(() => {
+            fetch('/api/heartbeat', { method: 'POST' }).catch(() => {});
+        }, 2000);
+
+        // Focus states
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const usernameWrapper = document.getElementById('usernameWrapper');
+        const passwordWrapper = document.getElementById('passwordWrapper');
+
+        usernameInput.addEventListener('focus', () => usernameWrapper.classList.add('focused'));
+        usernameInput.addEventListener('blur', () => usernameWrapper.classList.remove('focused'));
+        passwordInput.addEventListener('focus', () => passwordWrapper.classList.add('focused'));
+        passwordInput.addEventListener('blur', () => passwordWrapper.classList.remove('focused'));
+
+        // Password toggle
+        const togglePassword = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Toggle icon
+            eyeIcon.setAttribute('data-lucide', type === 'password' ? 'eye' : 'eye-off');
+            lucide.createIcons();
+        });
+
+        // Form submission with loading state
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+
+        loginForm.addEventListener('submit', (e) => {
+            submitBtn.disabled = true;
+            btnText.innerHTML = '<span class="loading-spinner"></span>Signing in...';
+        });
+
+        // Auto-focus username on load
+        window.addEventListener('load', () => {
+            usernameInput.focus();
+        });
+    </script>
+</body>
+
+</html>

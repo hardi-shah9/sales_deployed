@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dreamgirl CRM - Sales Commission System</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">DG</div>
+                    <div>
+                        <h1 class="app-title">Dreamgirl CRM</h1>
+                        <p class="app-subtitle">Sales Commission System</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="showSection('dashboard')">
+                        <span class="icon">📊</span> Dashboard
+                    </button>
+                    <button class="btn btn-secondary" onclick="showSection('entry')">
+                        <span class="icon">➕</span> New Sale
+                    </button>
+                    <button class="btn btn-secondary" onclick="showSection('reports')">
+                        <span class="icon">📈</span> Reports
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="section-header">
+                    <h2 class="section-title">Dashboard Overview</h2>
+                    <div class="filter-controls">
+                        <input type="date" id="dashboard-start-date" class="input-field">
+                        <input type="date" id="dashboard-end-date" class="input-field">
+                        <button class="btn btn-primary" onclick="loadDashboard()">
+                            <span class="icon">🔍</span> Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <p class="stat-label">Total Sales</p>
+                            <h3 class="stat-value" id="total-sales">₹0.00</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💸</div>
+                        <div class="stat-content">
+                            <p class="stat-label">Total Commission</p>
+                            <h3 class="stat-value" id="total-commission">₹0.00</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎁</div>
+                        <div class="stat-content">
+                            <p class="stat-label">Total CD Bonus</p>
+                            <h3 class="stat-value" id="total-cd-bonus">₹0.00</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <p class="stat-label">Total Transactions</p>
+                            <h3 class="stat-value" id="total-transactions">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Sales -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Sales</h3>
+                        <button class="btn btn-sm btn-primary" onclick="loadDashboard()">
+                            <span class="icon">🔄</span> Refresh
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Bill No</th>
+                                    <th>Salesman</th>
+                                    <th>Sales Amount</th>
+                                    <th>Discount %</th>
+                                    <th>Net Amount</th>
+                                    <th>Commission</th>
+                                    <th>CD Bonus</th>
+                                    <th>Total Earning</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-sales-tbody">
+                                <tr>
+                                    <td colspan="10" class="empty-state">No sales data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sales Entry Section -->
+            <section id="entry-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">New Sale Entry</h2>
+                </div>
+
+                <div class="card form-card">
+                    <form id="sale-form" onsubmit="submitSale(event)">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="sale-date" class="form-label">Date *</label>
+                                <input type="date" id="sale-date" class="input-field" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bill-no" class="form-label">Bill Number *</label>
+                                <input type="text" id="bill-no" class="input-field" placeholder="e.g., BILL001" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="salesman-name" class="form-label">Salesman Name *</label>
+                                <input type="text" id="salesman-name" class="input-field" placeholder="Enter salesman name" list="salesmen-list" required>
+                                <datalist id="salesmen-list"></datalist>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="sales-amount" class="form-label">Sales Amount (₹) *</label>
+                                <input type="number" id="sales-amount" class="input-field" placeholder="0.00" step="0.01" min="0" required oninput="calculateDiscount()">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="discount-amount" class="form-label">Discount Amount (₹) *</label>
+                                <input type="number" id="discount-amount" class="input-field" placeholder="0.00" step="0.01" min="0" required oninput="calculateDiscount()">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Discount Percentage</label>
+                                <div class="calculated-field" id="discount-percentage">0.00%</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Net Amount</label>
+                                <div class="calculated-field" id="net-amount">₹0.00</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Commission (1%)</label>
+                                <div class="calculated-field" id="commission-preview">₹0.00</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">CD Bonus Eligibility</label>
+                                <div class="calculated-field" id="cd-bonus-preview">-</div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <span class="icon">💾</span> Save Sale
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-large" onclick="resetForm()">
+                                <span class="icon">🔄</span> Reset
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="form-message" class="form-message"></div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports-section" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Sales Reports</h2>
+                    <div class="filter-controls">
+                        <input type="date" id="report-start-date" class="input-field">
+                        <input type="date" id="report-end-date" class="input-field">
+                        <button class="btn btn-primary" onclick="loadReports()">
+                            <span class="icon">🔍</span> Filter
+                        </button>
+                        <button class="btn btn-success" onclick="exportToExcel()">
+                            <span class="icon">📥</span> Export to Excel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Salesman Summary -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Salesman-wise Summary</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Salesman Name</th>
+                                    <th>Transactions</th>
+                                    <th>Total Sales</th>
+                                    <th>Total Discount</th>
+                                    <th>Net Amount</th>
+                                    <th>Commission</th>
+                                    <th>CD Bonus</th>
+                                    <th>Total Earning</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summary-tbody">
+                                <tr>
+                                    <td colspan="8" class="empty-state">No data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Detailed Sales -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Detailed Sales Report</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Bill No</th>
+                                    <th>Salesman</th>
+                                    <th>Sales Amount</th>
+                                    <th>Discount</th>
+                                    <th>Discount %</th>
+                                    <th>Net Amount</th>
+                                    <th>Commission</th>
+                                    <th>CD Bonus</th>
+                                    <th>CD Slab</th>
+                                    <th>Total Earning</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailed-sales-tbody">
+                                <tr>
+                                    <td colspan="12" class="empty-state">No data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
