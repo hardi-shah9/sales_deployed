@@ -113,7 +113,7 @@ class Sale(db.Model):
         total_commission = commission_1_percent + cd_bonus_amount + lt_bonus
         
         # Step 7: Outstanding Balance — only when Amt Received is entered
-        outstanding_balance = round(sales_amt - outstanding_amt, 2) if outstanding_amt > 0 else 0
+        outstanding_balance = round(net_amount - outstanding_amt, 2) if outstanding_amt > 0 else 0
 
         return {
             'net_amount': round(net_amount, 2),
@@ -138,7 +138,7 @@ class Sale(db.Model):
             'gr_amt': float(self.gr_amt),
             'outstanding_amt': float(self.outstanding_amt),
             'net_amount': float(self.net_amount),
-            'outstanding_balance': round(float(self.sales_amt) - float(self.outstanding_amt), 2) if float(self.outstanding_amt) > 0 else 0,
+            'outstanding_balance': round(float(self.net_amount) - float(self.outstanding_amt), 2) if float(self.outstanding_amt) > 0 else 0,
             'commission_1_percent': float(self.commission_1_percent),
             'discount_percentage': float(self.discount_percentage),
             'cd_bonus_eligible': self.cd_bonus_eligible,
